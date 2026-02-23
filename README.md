@@ -184,15 +184,40 @@ All three entry points accept the same keyword arguments. These map to the `Comp
 
 ## How it works
 
-1. Source is extracted (via `inspect.getsource` or marimo's runtime context)
-2. `import cython` is auto-prepended if missing (detected via AST, not regex)
-3. `from cython.cimports.*` imports above the function are collected via AST and included
-4. A content-addressed cache key is computed (SHA-256 of source + all options + Python/Cython versions)
-5. On cache miss: write `.pyx` -> cythonize to `.c` -> compile to `.so` via setuptools -> load with `importlib`
-6. On cache hit: load the existing `.so` directly
-7. Intermediate build artifacts (`.c`, `.cpp`, temp dirs) are cleaned up after successful compilation
+### Pipeline
 
-Compiled artifacts live in `.marimo_cython_cache/` (add to `.gitignore`). Numpy includes are auto-detected if the source references numpy.
+All three APIs converge into the same path: normalize source, compute cache key, build or load.
+
+```
+Source → Normalize → Cache check → Cythonize (.pyx → .c) → Build (.c → .so) → Load
+```
+
+### Source extraction (`@cy.compile`)
+
+The decorator uses `inspect.getsource(fn)` to get the function source. This works in marimo because marimo populates `linecache` for exec'd cell code (the same mechanism Python uses for tracebacks — not a private API). Decorator lines are stripped before compilation.
+
+### Cimport context recovery
+
+`inspect.getsource` only returns the function body. `from cython.cimports.*` imports written above the function in the same cell are not included. To recover them, `_collect_context_cimports` AST-parses all lines above the function definition, finds `ImportFrom` nodes matching `cython.cimports.*`, and prepends them to the source.
+
+### Auto `import cython`
+
+`import cython` is auto-prepended if missing (needed for `cython.int`, `cython.double` annotations). Detection uses `ast.parse`, not regex. Critically, `from cython.cimports.*` does NOT count as a cython import — it imports C symbols, not the `cython` module. Getting this wrong causes `cython.double` to fail with "Unknown type declaration".
+
+### Content-addressed caching
+
+The cache key is a SHA-256 of: source (post-normalization), all C/C++ flags, all compiler directives, `EXT_SUFFIX` (Python ABI), and `Cython.__version__`. Module name becomes `{prefix}_{hash[:16]}`. On hit, the `.so` loads directly via `importlib`.
+
+### Build
+
+On cache miss: write `.pyx` → `cythonize()` to `.c` → `setuptools` `build_ext` to `.so` → load with `importlib`. Build temp uses a short-lived `tempfile.mkdtemp` to avoid path-length issues. Intermediate `.c`/`.cpp` files are cleaned after success; `.pyx` is kept for debugging.
+
+### Other details
+
+- **Numpy**: auto-detected from source; `numpy.get_include()` added to `include_dirs` automatically
+- **Linker warnings**: `-Wl,-w` suppresses CPython 3.14's stale `Modules/_hacl` path warnings
+- **`CythonModule`**: wrapper that delegates attribute access to the compiled module and supports marimo rich display (`_mime_()`) for annotation HTML
+- **Cache dir**: `.marimo_cython_cache/` by default (add to `.gitignore`)
 
 ## Annotations
 

@@ -25,15 +25,15 @@ classifiers = [
     "Topic :: Software Development :: Compilers",
     "Typing :: Typed",
 ]
-[project.urls]
-Homepage = "https://github.com/cemrehancavdar/marimo-cython"
-Repository = "https://github.com/cemrehancavdar/marimo-cython"
-Issues = "https://github.com/cemrehancavdar/marimo-cython/issues"
-
 dependencies = [
     "cython>=3.0",
     "setuptools",
 ]
+
+[project.urls]
+Homepage = "https://github.com/cemrehancavdar/marimo-cython"
+Repository = "https://github.com/cemrehancavdar/marimo-cython"
+Issues = "https://github.com/cemrehancavdar/marimo-cython/issues"
 
 [project.optional-dependencies]
 dev = [

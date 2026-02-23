@@ -1,0 +1,59 @@
+[project]
+name = "marimo-cython"
+version = "0.1.0"
+description = "Cython compilation support for marimo notebooks"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Cemrehan Çavdar", email = "cemrehancavdar@hotmail.com" }
+]
+requires-python = ">=3.10"
+keywords = ["cython", "marimo", "notebook", "compilation", "performance"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Cython",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Compilers",
+    "Typing :: Typed",
+]
+[project.urls]
+Homepage = "https://github.com/cemrehancavdar/marimo-cython"
+Repository = "https://github.com/cemrehancavdar/marimo-cython"
+Issues = "https://github.com/cemrehancavdar/marimo-cython/issues"
+
+dependencies = [
+    "cython>=3.0",
+    "setuptools",
+]
+
+[project.optional-dependencies]
+dev = [
+    "marimo",
+    "ruff",
+    "pytest",
+    "numpy",
+    "pyright",
+    "ty",
+    "anywidget>=0.9",
+    "traitlets",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.13,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]

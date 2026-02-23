@@ -1,0 +1,30 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Cython cache
+.marimo_cython_cache/
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Marimo session state
+__marimo__/
+
+# Browser automation
+.rodney/
+
+# Jupyter notebooks (reference only, not part of the project)
+notebooks/
+
+# Agent journal
+.agent/

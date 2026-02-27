@@ -1,5 +1,7 @@
 # marimo-cython
 
+[![Open in molab](https://marimo.io/molab-shield.svg)](https://molab.marimo.io/github/cemrehancavdar/marimo-cython/blob/main/examples/mandelbrot.py)
+
 Cython compilation support for [marimo](https://marimo.io) notebooks. Write Cython-accelerated functions directly in notebook cells and run them at native speed — no build system boilerplate required.
 
 This is the marimo equivalent of Jupyter's `%%cython` magic, redesigned for marimo's reactive DAG model.

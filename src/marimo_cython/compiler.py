@@ -284,7 +284,10 @@ def _build_extension(extensions: list[Extension], build_dir: Path) -> None:
     temp_dir = tempfile.mkdtemp(prefix="_cy_build_")
     try:
         dist = Distribution({"ext_modules": extensions})
-        dist.parse_config_files()
+        # NOTE: Do NOT call dist.parse_config_files() here.
+        # It reads pyproject.toml from the current directory, which may have
+        # config (e.g. license classifiers) that causes setuptools 82+ to fail.
+        # We only need to build an extension, not parse user project config.
         cmd = build_ext(dist)
         cmd.build_lib = str(build_dir)
         cmd.build_temp = temp_dir
